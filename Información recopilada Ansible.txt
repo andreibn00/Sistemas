@@ -1,0 +1,31 @@
+1. INFORMACIÓN ENCONTRADA EN YOUTUBE.
+    - Canal/Autor: makigas
+        - Ansible – 1. ¿Qué es Ansible?
+            Enlace:
+            https://www.youtube.com/watch?v=slNIwBPeQvE&list=PLTd5ehIj0goP2RSCvTiz3-Cko8U6SQV1P
+        - Ansible – 2. Instalación de Ansible
+            Enlace:
+            https://www.youtube.com/watch?v=Zimn-UCbQ0A&list=PLTd5ehIj0goP2RSCvTiz3-Cko8U6SQV1P&index=2
+        - Ansible – 3. Inventario
+            Enlace:   
+            https://www.youtube.com/watch?v=VgnidinNlkQ&list=PLTd5ehIj0goP2RSCvTiz3-Cko8U6SQV1P&index=3
+        - Ansible – 4. Comandos básicos ad-hoc
+            Enlace:
+            https://www.youtube.com/watch?v=83DBL6CGNmY&list=PLTd5ehIj0goP2RSCvTiz3-Cko8U6SQV1P&index=4
+        - Ansible – 5. Comandos ad-hoc para controlar módulos
+            Enlace:
+            https://www.youtube.com/watch?v=-MuOmvN1tgY&list=PLTd5ehIj0goP2RSCvTiz3-Cko8U6SQV1P&index=5
+        - Ansible – 6. Redactando un playbook
+            Enlace:
+            https://www.youtube.com/watch?v=Wuv0ZPOMLf0&list=PLTd5ehIj0goP2RSCvTiz3-Cko8U6SQV1P&index=6
+        - Ansible – 7. Conectarse como otro usuario (inciso)
+            Enlace:
+            https://www.youtube.com/watch?v=ggTS32i2JmA&list=PLTd5ehIj0goP2RSCvTiz3-Cko8U6SQV1P&index=7
+        - Ansible – 8. Handlers
+            Enlace:
+            https://www.youtube.com/watch?v=G97sqHIG38w&list=PLTd5ehIj0goP2RSCvTiz3-Cko8U6SQV1P&index=8
+
+2. INFORMACIÓN ENCONTRADA EN LA WEB.
+    https://docs.ansible.com/
+    https://www.ansible.com/blog
+
