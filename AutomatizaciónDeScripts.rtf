@@ -1,0 +1,92 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang3082{\fonttbl{\f0\fnil\fcharset0 Calibri;}{\f1\fnil Calibri;}}
+{\colortbl ;\red0\green0\blue255;}
+{\*\generator Riched20 10.0.18362}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\f0\fs22\lang10 This guide explains simple automation ideas in Linux only. To try out some of my ideas, you can set up a lab server here on Linuxacademy or use an AWS instance if you have one running\par
+\par
+If you are using Debian or Ubuntu often, you will have to run \lquote apt-get update\rquote  before you can install any new program or repo. This can be automated in a very simple way. Look at my code snippet below. I would suggest you make this file executable and place it into your /etc/cron.daily folder. Of course, you can also create a custom anacrontab for that.\par
+\par
+#!/bin/bash\par
+DATE=date sudo apt-get update \par
+echo "apt-get update has been run at $DATE" >> /var/log/apt-getupdatestats\par
+Another script I have written is counting all files in certain directories on a virtual server. It\rquote s great for preventing disk usage problems. I would suggest integrating this script into a cron or anacron job that\rquote s running on a daily or at least weekly basis. Instead of getting the result of the file count dumped into the /home directory you could also use something like |mail -s \ldblquote filecount server X $DATE\rdblquote  email@address.com\par
+\par
+#!/bin/bash\par
+cd $HOME \par
+find * -maxdepth 0 -type d -exec sh -c "echo -n \{\} ' '; ls -lR \{\} | wc -l" \\; > $HOME/filecount_homedir.txt \par
+cd public_html/\par
+find * -maxdepth 0 -type d -exec sh -c "echo -n \{\} ' '; ls -lR \{\} | wc -l" \\; > $HOME/filecountpublic_html.txt\par
+WordPress is the biggest Content Management System in the world, and I\rquote m sure that at least some students here on Linuxacademy are managing one or more WordPress sites for a business or themselves. Now, once you have been doing that for a while you will have experienced the infamous \lquote white screen of death\rquote  or a generic \lquote 500 internal server error\rquote . In my job, I have to troubleshoot situations like that every day. Checking the .htaccess file and if necessary replacing it with a default WordPress .htaccess file was something I had to do all the time. As it is quite a repetitive task and I was taking the \ldblquote Administrator\rquote s Guide to Bash Scripting\rdblquote  course at that time I got the idea of creating a small script that compares a default WordPress .htaccess file with the one currently located in the user\rquote s web root. Look at my code below and try it out yourself! Of course, you would need to create your own directory on a free AWS EC2 instance for the default WordPress .htaccess. By doing that, you would also learn a bit about how AWS works, which is good to know.\par
+\par
+#!/bin/bash\par
+cd public_html/\par
+echo "Comparing both htaccess files..." \par
+wget {{\field{\*\fldinst{HYPERLINK http://aws-default-files.com/cleanhtaccess/cleanwphtaccess }}{\fldrslt{http://aws-default-files.com/cleanhtaccess/cleanwphtaccess\ul0\cf0}}}}\f0\fs22  \par
+if diff .htaccess cleanwphtaccess >/dev/null ; \par
+then \par
+echo "THIS FILE IS SAFE AND NOT CORRUPTED" \par
+else \par
+echo "THIS FILE SEEMS TO BE CORRUPTED. RENAMING IT NOW!" && mv .htaccess .htaccess.corrupted \par
+fi \par
+mv cleanwphtaccess .htaccess\par
+Again, I would like to stress that I\rquote m not claiming that my code is perfect. It\rquote s a work in progress. Sometimes I try to add stuff to it or change it. So if you see a mistake or have a better idea, contact me in the community. I\rquote m very open to improvement suggestions!\par
+\par
+Another thing I have automated on my cloud instances is maintenance of the logs. To begin with, I have changed the configuration of logrotate so it compresses old logs after 2 weeks. In addition to that, I\rquote m using the script below stored in the /etc/cron.weekly directory. I\rquote m doing that because anacron is checking files in there if they have been run in the last week or not. If it finds that it hasn\rquote t run in the last week, it will execute the script on the spot without the admin ever having to worry about it. This is extremely helpful if you don\rquote t have the instance running 24/7.\par
+\par
+#!/bin/bash\par
+cd /var/log\par
+find . -iname "*.gz" -atime +14 -type f | xargs -I\{\} mv \{\} /var/log/oldlogs > /var/log/oldlog_output 2>&1\par
+The reason I\rquote m running this script on a regular basis is partially to get a better overview of the /var/log directory but also to get \lquote old\rquote  log files separated from the current ones. I have another script running that empties the content of the /var/log/oldlogs directory every other month.\par
+\par
+The /var/log directory can be used for many automated scripts I think. The other automated script I run there checks for failed login attempts and sends the output to my email address every week. The example below is correct for Ubuntu or Debian based servers.\par
+\par
+#!/bin/bash\par
+EMAIL=your.email@address.com \par
+cd /var/log \par
+tail -n 30 auth.log | grep -i "failed" | mail -s "Failed SSH Logins" $EMAIL\par
+Last but not least, there is a script I\rquote m using all the time. It might not be as helpful for other people as not everyone here is working for a Web Hosting Company.\par
+\par
+What it does is to send \lquote reminder emails\rquote  to individuals who tend to forget about certain processes I have told them about many times before. I have come up with this idea because\par
+\par
+I was asked the same questions over and over again and wanted to find a way to make it stop. Look at my code below:\par
+\par
+\par
+EMAIL=recipient.a@emailprovider.com,recipient.b@emailprovider.com,recipient.c@emailprovider.com,recipient.d@emailprovider.com,recipient.e@emailprovider.com, recipient.f@emailprovider.com,recipient.g@emailprovider.com,recipient.h@emailprovider.com,recipient.i@emailprovider.com,recipient.j@emailprovider.com \par
+cat /home/checkdns.txt | mail -s "How to check the DNS for Hosting Cases" $EMAIL\par
+This works for at least 40 recipients at the same time (It should work with more recipients as well, but 40 was the highest number of recipients I have tried so far).\par
+\par
+You can use this script with cron or anacron so it sends the reminder on certain days or a daily/weekly basis. Theoretically, you can also use this script to send some sort of report to your manager.\par
+\par
+However, this would require the manager use a Dropbox account (with a free account they would need to invite their team members and other colleagues to increase their storage space to 16GB).\par
+\par
+If you\rquote re interested and want to know how to do it, just respond to this guide! I\rquote ll be happy to explain it to you.\par
+\par
+These are a few clever day-to-day automation ideas. As mentioned before, feel free to contact me in the community and ask me about some of my scripts or tell me if you have a better idea for them.\par
+\par
+Sources / Resources\par
+Most of these ideas come from courses here on linuxacademy.com. The System Administrator\rquote s Guide to BASH scripting was probably the most influential one. I\rquote m also reading the book Comptia Linux+ / LPIC-1 Cert Guide: Exams Lx0-103 & Lx0-104/101-400 & 102-400. It is very good and has helped me improve my code in many ways.\par
+\par
+----------------------------------------------------------------------------------------------------------\par
+\par
+Here's a trivial example of a shell script and how to create it. In my earlier series on Bash command-line programming, I used the example from every book on programming I have ever read: "Hello world." From the command line, it looks like this:\par
+\par
+[student@testvm1 ~]$ echo "Hello world"\par
+Hello world\par
+By definition, a program or shell script is a sequence of instructions for the computer to execute. But typing them into the command line every time is quite tedious, especially when the programs are long and complex. Storing them in a file that can be executed with a single command saves time and reduces the possibility for errors to creep in.\par
+\par
+I recommend trying the following examples as a non-root user on a test system or virtual machine (VM). Although the examples are harmless, mistakes do happen, and being safe is always wise.\par
+\par
+The first task is to create a file to contain your program. Use the touch command to create the empty file, hello, then make it executable:\par
+\par
+[student@testvm1 ~]$ touch hello\par
+[student@testvm1 ~]$ chmod 774 hello\par
+Now, use your favorite editor to add the following line to the file:\par
+\par
+echo "Hello world"\par
+Save the file and run it from the command line. You can use a separate shell session to execute the scripts in this series:\par
+\par
+[student@testvm1 ~]$ ./hello\par
+Hello world!\par
+This is the simplest Bash program you may ever create\f1\emdash a single statement in a file. For this exercise, your complete shell script will be built around this simple Bash statement. The function of the program is irrelevant for this purpose, and this simple statement allows you to build a program structure\emdash a template for other programs\emdash without being concerned about the logic of a functional purpose. You can concentrate on the basic program structure and creating your template in a very simple way, and you can create and test the template itself rather than a complex functional program.\par
+\f0\par
+}
+ 
