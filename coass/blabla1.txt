@@ -1,0 +1,12 @@
+LINKS IMPORTANTES:
+
+
+INSTALACIÓN ANSIBLE EN UBUTUNU + EXPLICACIONES:
+https://blog.ssdnodes.com/blog/step-by-step-ansible-guide/
+https://www.simplilearn.com/what-is-ansible-article
+https://www.linux-party.com/36-linuxbiz/10187-shell-scripting-para-automatizar-las-tareas-de-mantenimiento-del-sistema-linux
+
+VÍDEOS:
+curso automatización con ansible: https://www.youtube.com/watch?v=wf_Ax0PpZxI
+automatización con ENTR: https://www.youtube.com/watch?v=9KAp_zWeI34
+lista reprod con otra guía de ansible: https://www.youtube.com/watch?v=sGeZm__pZ9I&list=PL2qzCKTbjutIyQAe3GglWISLnLTQLGm7e
